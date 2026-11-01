@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRACK AN EGG - Win the Best Pet!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelBg: '#FDF0F5',
+                        pastelCard: '#FFFFFF',
+                        pastelPink: '#FFB7B2',
+                        pastelYellow: '#FFE5B4',
+                        pastelGreen: '#B5EAD7',
+                        pastelBlue: '#C7CEEA',
+                        pastelPurple: '#E2F0CB',
+                        pastelViolet: '#DEC20B',
+                        rarityCommon: '#A8DADC',
+                        rarityUncommon: '#B5EAD7',
+                        rarityRare: '#FFDAC1',
+                        rarityLegendary: '#FFB7B2',
+                        rarityAncient: '#E2F0CB',
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #FDE2E4 0%, #FFF1E6 35%, #E2ECE9 70%, #DFE7FD 100%);
+            min-height: 100vh;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+
+        .font-header {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Floating background elements */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            animation: float 8s infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* Egg Animations */
+        .egg-shake-1 { animation: shakeSoft 0.3s ease-in-out; }
+        .egg-shake-2 { animation: shakeMedium 0.35s ease-in-out; }
+        .egg-shake-3 { animation: shakeHard 0.4s ease-in-out; }
+        .egg-shake-4 { animation: shakeCrazy 0.45s ease-in-out; }
+
+        @keyframes shakeSoft {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.05) rotate(-4deg); }
+            75% { transform: scale(1.05) rotate(4deg); }
+        }
+
+        @keyframes shakeMedium {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(1.08) rotate(-8deg); }
+            60% { transform: scale(1.08) rotate(8deg); }
+        }
+
+        @keyframes shakeHard {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            15% { transform: scale(1.12) rotate(-12deg); }
+            45% { transform: scale(1.12) rotate(12deg); }
+            75% { transform: scale(1.12) rotate(-8deg); }
+        }
+
+        @keyframes shakeCrazy {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            10% { transform: scale(1.18) rotate(-16deg); }
+            30% { transform: scale(1.18) rotate(16deg); }
+            50% { transform: scale(1.18) rotate(-16deg); }
+            70% { transform: scale(1.18) rotate(16deg); }
+        }
+
+        /* Soft Glow & Shadows */
+        .soft-shadow {
+            box-shadow: 0 10px 30px -5px rgba(230, 180, 200, 0.5);
+        }
+
+        .btn-pastel {
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-pastel:hover {
+            transform: translateY(-3px) scale(1.03);
+        }
+
+        .btn-pastel:active {
+            transform: translateY(1px) scale(0.97);
+        }
+
+        /* Custom Scrollbar for Modal */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDF0F5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFB7B2;
+            border-radius: 10px;
+        }
+
+        /* Sparkle Particle Styling */
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkleAnim 0.8s forwards ease-out;
+            font-size: 1.5rem;
+        }
+
+        @keyframes sparkleAnim {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.3); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between relative overflow-hidden">
+
+    <!-- Floating Background Bubbles -->
+    <div class="bubble w-24 h-24 top-10 left-10" style="animation-delay: 0s;"></div>
+    <div class="bubble w-36 h-36 top-1/3 right-12" style="animation-delay: 2s;"></div>
+    <div class="bubble w-20 h-20 bottom-16 left-1/4" style="animation-delay: 4s;"></div>
+    <div class="bubble w-28 h-28 bottom-10 right-1/3" style="animation-delay: 1s;"></div>
+
+    <!-- Header Navigation -->
+    <header class="w-full max-w-5xl mx-auto px-6 py-5 flex justify-between items-center z-10 relative">
+        <div class="flex items-center space-x-3">
+            <span class="text-3xl">🪺</span>
+            <div class="text-2xl sm:text-3xl font-header font-bold tracking-wide text-pink-500 drop-shadow-sm">
+                CRACK AN EGG
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4">
+            <!-- Audio Toggle Button -->
+            <button id="bgmToggleBtn" onclick="toggleBGM()" class="btn-pastel bg-white/80 backdrop-blur-md text-slate-700 px-4 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border-2 border-pink-200 soft-shadow">
+                <span id="bgmIcon">🎵</span>
+                <span id="bgmText" class="hidden sm:inline">Music: OFF</span>
+            </button>
+
+            <!-- Pet List Modal Button -->
+            <button onclick="openPetListModal()" class="btn-pastel bg-gradient-to-r from-pink-300 to-purple-300 text-slate-800 px-5 py-2.5 rounded-full font-header font-bold text-sm sm:text-base flex items-center gap-2 border-2 border-white soft-shadow">
+                <span>📖</span> Pet List
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 z-10 relative">
+        
+        <!-- Sub-Header Title -->
+        <div class="mb-4">
+            <h1 class="text-3xl sm:text-5xl font-header font-extrabold text-slate-700 tracking-wide drop-shadow-sm">
+                Win the Best Pet! ✨
+            </h1>
+            <p class="text-slate-500 font-medium text-sm sm:text-base mt-2">
+                Click the egg <span class="font-bold text-pink-500">5 times</span> to crack it open!
+            </p>
+        </div>
+
+        <!-- Egg Container & Interactive Visual -->
+        <div class="relative my-6 flex flex-col items-center justify-center">
+            
+            <!-- Click Counter Indicator Badge -->
+            <div class="mb-4 bg-white/90 backdrop-blur-md border-2 border-pink-200 px-5 py-1.5 rounded-full soft-shadow flex items-center gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Clicks:</span>
+                <span id="clickCounterText" class="text-xl font-header font-extrabold text-pink-500">0 / 5</span>
+            </div>
+
+            <!-- Interactive Egg Element -->
+            <div id="eggWrapper" onclick="handleEggClick(event)" class="relative cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95 group">
+                
+                <!-- Glow Effect behind Egg -->
+                <div class="absolute inset-0 bg-yellow-200/50 rounded-full filter blur-xl group-hover:blur-2xl transition-all"></div>
+
+                <!-- SVG Egg Illustration with Dynamic Cracks -->
+                <svg id="eggSvg" class="w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all" viewBox="0 0 200 260">
+                    <defs>
+                        <!-- Pastel Gradient for Egg Base -->
+                        <linearGradient id="eggGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFF9E6" />
+                            <stop offset="50%" stop-color="#FFDAC1" />
+                            <stop offset="100%" stop-color="#FFB7B2" />
+                        </linearGradient>
+
+                        <!-- Egg Pattern Circles -->
+                        <pattern id="pastelPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                            <circle cx="10" cy="10" r="4" fill="#B5EAD7" opacity="0.6" />
+                            <circle cx="30" cy="30" r="5" fill="#C7CEEA" opacity="0.6" />
+                            <circle cx="30" cy="10" r="3" fill="#E2F0CB" opacity="0.6" />
+                        </pattern>
+                    </defs>
+
+                    <!-- Base Egg Shape -->
+                    <path d="M 100,10 C 160,10 190,90 190,165 C 190,220 150,250 100,250 C 50,250 10,220 10,165 C 10,90 40,10 100,10 Z" 
+                          fill="url(#eggGrad)" 
+                          stroke="#FFFFFF" 
+                          stroke-width="5" />
+                    
+                    <!-- Decorative Pattern Overlay -->
+                    <path d="M 100,10 C 160,10 190,90 190,165 C 190,220 150,250 100,250 C 50,250 10,220 10,165 C 10,90 40,10 100,10 Z" 
+                          fill="url(#pastelPattern)" />
+
+                    <!-- Crack Path 1 (Appears on Click 1 & 2) -->
+                    <path id="crack1" d="M 100,40 L 95,65 L 110,85 L 90,110" 
+                          stroke="#7B5E57" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+
+                    <!-- Crack Path 2 (Appears on Click 3) -->
+                    <path id="crack2" d="M 90,110 L 120,130 L 85,160" 
+                          stroke="#7B5E57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+
+                    <!-- Crack Path 3 (Appears on Click 4) -->
+                    <path id="crack3" d="M 85,160 L 130,195 L 100,225" 
+                          stroke="#7B5E57" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+                </svg>
+
+                <!-- Floor Shadow -->
+                <div class="w-48 h-6 bg-slate-400/20 rounded-full mx-auto -mt-3 filter blur-sm"></div>
+            </div>
+
+            <!-- Helper Hint -->
+            <p class="text-xs text-slate-400 mt-2 font-medium">Tap egg repeatedly to hatch!</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 text-xs font-semibold text-slate-400 z-10 relative">
+        CRACK AN EGG &copy; Pastel Pet Collector Game
+    </footer>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- 1. PET LIST MODAL -->
+    <div id="petListModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
+        <div class="bg-white/95 w-full max-w-2xl rounded-3xl p-6 sm:p-8 soft-shadow border-4 border-pink-100 max-h-[85vh] flex flex-col transform transition-transform scale-95 opacity-0" id="petListContent">
+            
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-pink-100 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📜</span>
+                    <h2 class="text-2xl font-header font-bold text-slate-700">Pet Collection Book</h2>
+                </div>
+                <button onclick="closePetListModal()" class="w-9 h-9 rounded-full bg-pink-100 text-pink-600 font-bold hover:bg-pink-200 flex items-center justify-center transition-colors">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Pet Tiers Scrollable Container -->
+            <div class="overflow-y-auto space-y-6 pr-2 flex-grow text-left">
+                
+                <!-- Common Tier -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-cyan-100 text-cyan-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Common (45%)</span>
+                    </div>
+                    <div id="commonList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <!-- Uncommon Tier -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-emerald-100 text-emerald-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Uncommon (30%)</span>
+                    </div>
+                    <div id="uncommonList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <!-- Rare Tier -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-amber-100 text-amber-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Rare (15%)</span>
+                    </div>
+                    <div id="rareList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <!-- Legendary Tier -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Legendary Mythical (8%)</span>
+                    </div>
+                    <div id="legendaryList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+
+                <!-- Ancient Mythical Tier -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="bg-lime-100 text-lime-800 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Ancient Mythical (2%)</span>
+                    </div>
+                    <div id="ancientList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="pt-4 border-t border-pink-100 mt-4 text-center">
+                <button onclick="closePetListModal()" class="btn-pastel bg-pink-400 text-white font-header font-bold px-8 py-2.5 rounded-full shadow-md hover:bg-pink-500">
+                    Got It!
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 2. REWARD HATCH MODAL -->
+    <div id="rewardModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 w-full max-w-md rounded-3xl p-6 sm:p-8 text-center soft-shadow border-4 border-white transform transition-transform scale-90 opacity-0 relative" id="rewardContent">
+            
+            <!-- Confetti Glow -->
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-yellow-300 text-3xl w-20 h-20 rounded-full flex items-center justify-center border-4 border-white shadow-lg animate-bounce">
+                🎉
+            </div>
+
+            <div class="mt-6">
+                <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Hatch Success!</h3>
+                <h2 class="text-2xl sm:text-3xl font-header font-extrabold text-slate-700 mt-1">
+                    Congratulations!
+                </h2>
+                <p class="text-slate-500 font-semibold text-sm mt-1">You've got a new pet!</p>
+            </div>
+
+            <!-- Pet Display Box -->
+            <div class="my-6 p-6 rounded-2xl bg-gradient-to-b from-pink-50 to-purple-50 border-2 border-pink-100 flex flex-col items-center justify-center">
+                <div id="rewardPetEmoji" class="text-7xl sm:text-8xl my-2 transform transition-all duration-300 hover:scale-110">
+                    🐱
+                </div>
+                <div id="rewardPetName" class="text-2xl font-header font-bold text-slate-800 mt-2">
+                    Cute Cat
+                </div>
+                <div id="rewardPetBadge" class="mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold tracking-wider uppercase border">
+                    COMMON
+                </div>
+            </div>
+
+            <!-- Play Again Action -->
+            <button onclick="resetEgg()" class="btn-pastel w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-header font-bold text-lg py-3.5 rounded-2xl shadow-lg hover:from-pink-500 hover:to-purple-500 flex items-center justify-center gap-2">
+                <span>🔄</span> Crack Another Egg!
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        /* -------------------------------------------------------------
+           1. PET DATA DEFINITION (20+ Pets categorized by Rarity)
+        ------------------------------------------------------------- */
+        const PET_DATABASE = {
+            common: [
+                { name: 'Cat', emoji: '🐱' },
+                { name: 'Dog', emoji: '🐶' },
+                { name: 'Mouse', emoji: '🐭' },
+                { name: 'Rabbit', emoji: '🐰' },
+                { name: 'Chick', emoji: '🐥' },
+                { name: 'Hamster', emoji: '🐹' }
+            ],
+            uncommon: [
+                { name: 'Fox', emoji: '🦊' },
+                { name: 'Bear', emoji: '🐻' },
+                { name: 'Panda', emoji: '🐼' },
+                { name: 'Koala', emoji: '🐨' },
+                { name: 'Tiger', emoji: '🐯' },
+                { name: 'Lion', emoji: '🦁' },
+                { name: 'Frog', emoji: '🐸' }
+            ],
+            rare: [
+                { name: 'Elephant', emoji: '🐘' },
+                { name: 'Giraffe', emoji: '🦒' },
+                { name: 'Octopus', emoji: '🐙' },
+                { name: 'Dolphin', emoji: '🐬' }
+            ],
+            legendary: [
+                { name: 'Unicorn', emoji: '🦄' },
+                { name: 'Dragon', emoji: '🐲' },
+                { name: 'Phoenix', emoji: '🐦‍🔥' }
+            ],
+            ancient: [
+                { name: 'T-Rex', emoji: '🦖' }
+            ]
+        };
+
+        /* -------------------------------------------------------------
+           2. GAME STATE
+        ------------------------------------------------------------- */
+        let clickCount = 0;
+        const MAX_CLICKS = 5;
+        let isHatched = false;
+
+        /* -------------------------------------------------------------
+           3. WEB AUDIO API SYNTHESIZER (No External Sound Dependencies)
+        ------------------------------------------------------------- */
+        let audioCtx = null;
+        let isBgmPlaying = false;
+        let bgmInterval = null;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Crack / Pop Sound Generator
+        function playCrackSound(intensity) {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            // Pitch increases as clicks get closer to hatching
+            const pitchMap = [220, 280, 350, 440, 580];
+            const baseFreq = pitchMap[Math.min(intensity - 1, 4)] || 300;
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.8, audioCtx.currentTime + 0.08);
+
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.09);
+        }
+
+        // Victory Fanfare Sound Generator
+        function playVictorySound() {
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const notes = [440, 554.37, 659.25, 880]; // A Major Chord Arpeggio
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+
+                gain.gain.setValueAtTime(0, audioCtx.currentTime + idx * 0.1);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + idx * 0.1 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.35);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + idx * 0.1);
+                osc.stop(audioCtx.currentTime + idx * 0.1 + 0.4);
+            });
+        }
+
+        // Relaxed Pastel Background Music Synth Loop
+        function toggleBGM() {
+            initAudioContext();
+            isBgmPlaying = !isBgmPlaying;
+
+            const iconEl = document.getElementById('bgmIcon');
+            const textEl = document.getElementById('bgmText');
+            const btnEl = document.getElementById('bgmToggleBtn');
+
+            if (isBgmPlaying) {
+                iconEl.innerText = '🎶';
+                textEl.innerText = 'Music: ON';
+                btnEl.classList.add('border-pink-400', 'bg-pink-50');
+                startBgmLoop();
+            } else {
+                iconEl.innerText = '🎵';
+                textEl.innerText = 'Music: OFF';
+                btnEl.classList.remove('border-pink-400', 'bg-pink-50');
+                stopBgmLoop();
+            }
+        }
+
+        function startBgmLoop() {
+            if (bgmInterval) clearInterval(bgmInterval);
+
+            // Simple cute pastel melody notes (frequencies)
+            const melody = [
+                523.25, 659.25, 783.99, 659.25, 
+                587.33, 698.46, 880.00, 698.46, 
+                523.25, 659.25, 783.99, 1046.50
+            ];
+            let noteIdx = 0;
+
+            bgmInterval = setInterval(() => {
+                if (!isBgmPlaying || !audioCtx) return;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(melody[noteIdx], audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.45);
+
+                noteIdx = (noteIdx + 1) % melody.length;
+            }, 500);
+        }
+
+        function stopBgmLoop() {
+            if (bgmInterval) {
+                clearInterval(bgmInterval);
+                bgmInterval = null;
+            }
+        }
+
+        /* -------------------------------------------------------------
+           4. EGG CLICK & CRACK MECHANIC
+        ------------------------------------------------------------- */
+        function handleEggClick(e) {
+            if (isHatched) return;
+
+            clickCount++;
+            document.getElementById('clickCounterText').innerText = `${clickCount} / ${MAX_CLICKS}`;
+
+            // Play Crack Sound
+            playCrackSound(clickCount);
+
+            // Trigger Visual Particle Sparkles
+            spawnSparkles(e);
+
+            // Trigger Shake Animation based on click count
+            const eggSvg = document.getElementById('eggSvg');
+            eggSvg.className = `w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all egg-shake-${Math.min(clickCount, 4)}`;
+
+            // Reveal Crack Lines SVG
+            if (clickCount >= 2) document.getElementById('crack1').classList.remove('hidden');
+            if (clickCount >= 3) document.getElementById('crack2').classList.remove('hidden');
+            if (clickCount >= 4) document.getElementById('crack3').classList.remove('hidden');
+
+            // Reset shake class after animation completes
+            setTimeout(() => {
+                eggSvg.className = 'w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all';
+            }, 450);
+
+            // Check Hatch Condition
+            if (clickCount >= MAX_CLICKS) {
+                isHatched = true;
+                setTimeout(hatchEgg, 300);
+            }
+        }
+
+        // Particle FX on Click
+        function spawnSparkles(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            const particles = ['✨', '⭐', '🌸', '💫'];
+
+            for (let i = 0; i < 6; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.innerText = particles[Math.floor(Math.random() * particles.length)];
+                
+                const dx = (Math.random() - 0.5) * 120 + 'px';
+                const dy = (Math.random() - 0.5) * 120 + 'px';
+
+                sparkle.style.left = `${clickX}px`;
+                sparkle.style.top = `${clickY}px`;
+                sparkle.style.setProperty('--dx', dx);
+                sparkle.style.setProperty('--dy', dy);
+
+                e.currentTarget.appendChild(sparkle);
+
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           5. PET HATCHING & WEIGHTED RANDOM SYSTEM
+        ------------------------------------------------------------- */
+        function hatchEgg() {
+            // Confetti Burst Effect
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA']
+                });
+            }
+
+            // Play Victory Sound
+            playVictorySound();
+
+            // Roll for Random Pet Weighted by Rarity
+            const selectedPet = getWeightedRandomPet();
+
+            // Display Reward Modal
+            showRewardModal(selectedPet);
+        }
+
+        function getWeightedRandomPet() {
+            // Probabilities: Common: 45%, Uncommon: 30%, Rare: 15%, Legendary: 8%, Ancient: 2%
+            const rand = Math.random() * 100;
+            let tier = 'common';
+
+            if (rand < 2) {
+                tier = 'ancient';
+            } else if (rand < 10) {
+                tier = 'legendary';
+            } else if (rand < 25) {
+                tier = 'rare';
+            } else if (rand < 55) {
+                tier = 'uncommon';
+            } else {
+                tier = 'common';
+            }
+
+            const petList = PET_DATABASE[tier];
+            const chosenPet = petList[Math.floor(Math.random() * petList.length)];
+            return { ...chosenPet, tier: tier };
+        }
+
+        /* -------------------------------------------------------------
+           6. MODAL SYSTEM LOGIC
+        ------------------------------------------------------------- */
+        function showRewardModal(pet) {
+            const modal = document.getElementById('rewardModal');
+            const content = document.getElementById('rewardContent');
+            const emojiEl = document.getElementById('rewardPetEmoji');
+            const nameEl = document.getElementById('rewardPetName');
+            const badgeEl = document.getElementById('rewardPetBadge');
+
+            emojiEl.innerText = pet.emoji;
+            nameEl.innerText = pet.name;
+
+            // Rarity Badge Styling
+            const badgeStyles = {
+                common: 'bg-cyan-100 text-cyan-700 border-cyan-300',
+                uncommon: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+                rare: 'bg-amber-100 text-amber-700 border-amber-300',
+                legendary: 'bg-rose-100 text-rose-700 border-rose-300',
+                ancient: 'bg-lime-100 text-lime-800 border-lime-400 font-extrabold animate-pulse'
+            };
+
+            const tierNames = {
+                common: 'COMMON',
+                uncommon: 'UNCOMMON',
+                rare: 'RARE',
+                legendary: 'LEGENDARY MYTHICAL',
+                ancient: 'ANCIENT MYTHICAL'
+            };
+
+            badgeEl.className = `mt-2 inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase border ${badgeStyles[pet.tier]}`;
+            badgeEl.innerText = tierNames[pet.tier];
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 20);
+        }
+
+        function resetEgg() {
+            clickCount = 0;
+            isHatched = false;
+
+            document.getElementById('clickCounterText').innerText = `0 / ${MAX_CLICKS}`;
+            document.getElementById('crack1').classList.add('hidden');
+            document.getElementById('crack2').classList.add('hidden');
+            document.getElementById('crack3').classList.add('hidden');
+
+            const modal = document.getElementById('rewardModal');
+            const content = document.getElementById('rewardContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Pet List Modal Logic
+        function renderPetList() {
+            const tiers = ['common', 'uncommon', 'rare', 'legendary', 'ancient'];
+            
+            tiers.forEach(tier => {
+                const container = document.getElementById(`${tier}List`);
+                if (!container) return;
+                
+                container.innerHTML = PET_DATABASE[tier].map(pet => `
+                    <div class="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-xl hover:bg-pink-50/50 transition-colors">
+                        <span class="text-2xl">${pet.emoji}</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-700">${pet.name}</span>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function openPetListModal() {
+            renderPetList();
+            const modal = document.getElementById('petListModal');
+            const content = document.getElementById('petListContent');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 20);
+        }
+
+        function closePetListModal() {
+            const modal = document.getElementById('petListModal');
+            const content = document.getElementById('petListContent');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // Initialize Pet List on Load
+        window.onload = function() {
+            renderPetList();
+        };
+    </script>
+</body>
+</html>
