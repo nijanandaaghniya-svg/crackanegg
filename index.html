@@ -23,12 +23,13 @@
                         pastelGreen: '#B5EAD7',
                         pastelBlue: '#C7CEEA',
                         pastelPurple: '#E2F0CB',
-                        pastelViolet: '#DEC20B',
-                        rarityCommon: '#A8DADC',
-                        rarityUncommon: '#B5EAD7',
-                        rarityRare: '#FFDAC1',
-                        rarityLegendary: '#FFB7B2',
-                        rarityAncient: '#E2F0CB',
+                        rarityCommon: '#94A3B8',
+                        rarityUncommon: '#34D399',
+                        rarityRare: '#60A5FA',
+                        rarityEpic: '#A78BFA',
+                        rarityLegendary: '#F43F5E',
+                        rarityAncient: '#F59E0B',
+                        rarityGodly: '#EC4899',
                     },
                     fontFamily: {
                         fredoka: ['Fredoka', 'sans-serif'],
@@ -49,9 +50,7 @@
             overflow-x: hidden;
         }
 
-        .font-header {
-            font-family: 'Fredoka', sans-serif;
-        }
+        .font-header { font-family: 'Fredoka', sans-serif; }
 
         /* Floating background elements */
         .bubble {
@@ -101,35 +100,20 @@
             70% { transform: scale(1.18) rotate(16deg); }
         }
 
-        /* Soft Glow & Shadows */
         .soft-shadow {
-            box-shadow: 0 10px 30px -5px rgba(230, 180, 200, 0.5);
+            box-shadow: 0 10px 30px -5px rgba(230, 180, 200, 0.4);
         }
 
         .btn-pastel {
             transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
-        .btn-pastel:hover {
-            transform: translateY(-3px) scale(1.03);
-        }
-
-        .btn-pastel:active {
-            transform: translateY(1px) scale(0.97);
-        }
+        .btn-pastel:hover { transform: translateY(-3px) scale(1.03); }
+        .btn-pastel:active { transform: translateY(1px) scale(0.97); }
 
         /* Custom Scrollbar for Modal */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #FDF0F5;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FFB7B2;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDF0F5; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #FFB7B2; border-radius: 10px; }
 
         /* Sparkle Particle Styling */
         .sparkle {
@@ -143,57 +127,88 @@
             0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.3); }
         }
+
+        .godly-glow {
+            animation: godlyPulse 2s infinite ease-in-out;
+        }
+        @keyframes godlyPulse {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(236, 72, 153, 0.8)); }
+            50% { filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.9)); }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen justify-between relative overflow-hidden">
 
-    <!-- Floating Background Bubbles -->
+    <!-- Background Bubbles -->
     <div class="bubble w-24 h-24 top-10 left-10" style="animation-delay: 0s;"></div>
     <div class="bubble w-36 h-36 top-1/3 right-12" style="animation-delay: 2s;"></div>
     <div class="bubble w-20 h-20 bottom-16 left-1/4" style="animation-delay: 4s;"></div>
     <div class="bubble w-28 h-28 bottom-10 right-1/3" style="animation-delay: 1s;"></div>
 
     <!-- Header Navigation -->
-    <header class="w-full max-w-5xl mx-auto px-6 py-5 flex justify-between items-center z-10 relative">
-        <div class="flex items-center space-x-3">
-            <span class="text-3xl">🪺</span>
+    <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap justify-between items-center gap-4 z-10 relative">
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <span class="text-3xl sm:text-4xl">🪺</span>
             <div class="text-2xl sm:text-3xl font-header font-bold tracking-wide text-pink-500 drop-shadow-sm">
                 CRACK AN EGG
             </div>
         </div>
 
-        <div class="flex items-center gap-3 sm:gap-4">
-            <!-- Audio Toggle Button -->
-            <button id="bgmToggleBtn" onclick="toggleBGM()" class="btn-pastel bg-white/80 backdrop-blur-md text-slate-700 px-4 py-2.5 rounded-full font-bold text-sm sm:text-base flex items-center gap-2 border-2 border-pink-200 soft-shadow">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <!-- BGM Button -->
+            <button id="bgmToggleBtn" onclick="toggleBGM()" class="btn-pastel bg-white/80 backdrop-blur-md text-slate-700 px-3.5 py-2 rounded-full font-bold text-xs sm:text-sm flex items-center gap-1.5 border-2 border-pink-200 soft-shadow">
                 <span id="bgmIcon">🎵</span>
                 <span id="bgmText" class="hidden sm:inline">Music: OFF</span>
             </button>
 
             <!-- Pet List Modal Button -->
-            <button onclick="openPetListModal()" class="btn-pastel bg-gradient-to-r from-pink-300 to-purple-300 text-slate-800 px-5 py-2.5 rounded-full font-header font-bold text-sm sm:text-base flex items-center gap-2 border-2 border-white soft-shadow">
+            <button onclick="openPetListModal()" class="btn-pastel bg-gradient-to-r from-purple-200 to-pink-200 text-slate-800 px-4 py-2 rounded-full font-header font-bold text-xs sm:text-sm flex items-center gap-1.5 border-2 border-white soft-shadow">
                 <span>📖</span> Pet List
+            </button>
+
+            <!-- My Collection Button -->
+            <button onclick="openMyCollectionModal()" class="btn-pastel bg-gradient-to-r from-pink-300 to-yellow-200 text-slate-800 px-4 py-2 rounded-full font-header font-bold text-xs sm:text-sm flex items-center gap-1.5 border-2 border-white soft-shadow">
+                <span>🎒</span> My Collection (<span id="collectionCountHeader">0</span>)
+            </button>
+
+            <!-- Reset Button -->
+            <button onclick="promptResetData()" class="btn-pastel bg-red-100 text-red-600 hover:bg-red-200 px-3.5 py-2 rounded-full font-header font-bold text-xs sm:text-sm flex items-center gap-1 border-2 border-red-200 soft-shadow">
+                <span>⚠️</span> Reset
             </button>
         </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 z-10 relative">
+    <main class="flex-grow flex flex-col items-center justify-center text-center px-4 z-10 relative max-w-4xl mx-auto w-full">
         
+        <!-- Name Input Section -->
+        <div class="w-full max-w-md bg-white/80 backdrop-blur-md p-3.5 rounded-2xl border-2 border-pink-200 soft-shadow mb-4 flex items-center justify-center gap-2">
+            <label for="userNameInput" class="text-xs sm:text-sm font-header font-bold text-slate-600 whitespace-nowrap">Type your name:</label>
+            <input type="text" id="userNameInput" oninput="saveUserName()" placeholder="Enter your name..." class="w-full bg-pink-50/60 border border-pink-200 text-slate-700 text-sm font-bold rounded-xl px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-pink-400">
+        </div>
+
         <!-- Sub-Header Title -->
-        <div class="mb-4">
+        <div class="mb-3">
             <h1 class="text-3xl sm:text-5xl font-header font-extrabold text-slate-700 tracking-wide drop-shadow-sm">
                 Win the Best Pet! ✨
             </h1>
-            <p class="text-slate-500 font-medium text-sm sm:text-base mt-2">
+            <p class="text-slate-500 font-medium text-xs sm:text-sm mt-1">
                 Click the egg <span class="font-bold text-pink-500">5 times</span> to crack it open!
             </p>
         </div>
 
+        <!-- Egg Active Badge & Type Indicator -->
+        <div class="flex items-center gap-2 my-1">
+            <span id="activeEggBadge" class="bg-gradient-to-r from-pink-400 to-purple-400 text-white font-header text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow">
+                🥚 Regular Egg Active
+            </span>
+        </div>
+
         <!-- Egg Container & Interactive Visual -->
-        <div class="relative my-6 flex flex-col items-center justify-center">
+        <div class="relative my-3 flex flex-col items-center justify-center">
             
             <!-- Click Counter Indicator Badge -->
-            <div class="mb-4 bg-white/90 backdrop-blur-md border-2 border-pink-200 px-5 py-1.5 rounded-full soft-shadow flex items-center gap-2">
+            <div class="mb-3 bg-white/90 backdrop-blur-md border-2 border-pink-200 px-5 py-1 rounded-full soft-shadow flex items-center gap-2">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Clicks:</span>
                 <span id="clickCounterText" class="text-xl font-header font-extrabold text-pink-500">0 / 5</span>
             </div>
@@ -202,19 +217,25 @@
             <div id="eggWrapper" onclick="handleEggClick(event)" class="relative cursor-pointer transition-transform duration-200 hover:scale-105 active:scale-95 group">
                 
                 <!-- Glow Effect behind Egg -->
-                <div class="absolute inset-0 bg-yellow-200/50 rounded-full filter blur-xl group-hover:blur-2xl transition-all"></div>
+                <div id="eggGlow" class="absolute inset-0 bg-yellow-200/50 rounded-full filter blur-xl group-hover:blur-2xl transition-all"></div>
 
                 <!-- SVG Egg Illustration with Dynamic Cracks -->
-                <svg id="eggSvg" class="w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all" viewBox="0 0 200 260">
+                <svg id="eggSvg" class="w-52 h-64 sm:w-60 sm:h-72 relative z-10 drop-shadow-2xl transition-all" viewBox="0 0 200 260">
                     <defs>
-                        <!-- Pastel Gradient for Egg Base -->
-                        <linearGradient id="eggGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <!-- Regular Gradient -->
+                        <linearGradient id="eggGradRegular" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#FFF9E6" />
                             <stop offset="50%" stop-color="#FFDAC1" />
                             <stop offset="100%" stop-color="#FFB7B2" />
                         </linearGradient>
 
-                        <!-- Egg Pattern Circles -->
+                        <!-- Lucky Gradient -->
+                        <linearGradient id="eggGradLucky" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFE259" />
+                            <stop offset="50%" stop-color="#FFA751" />
+                            <stop offset="100%" stop-color="#FF416C" />
+                        </linearGradient>
+
                         <pattern id="pastelPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
                             <circle cx="10" cy="10" r="4" fill="#B5EAD7" opacity="0.6" />
                             <circle cx="30" cy="30" r="5" fill="#C7CEEA" opacity="0.6" />
@@ -223,8 +244,8 @@
                     </defs>
 
                     <!-- Base Egg Shape -->
-                    <path d="M 100,10 C 160,10 190,90 190,165 C 190,220 150,250 100,250 C 50,250 10,220 10,165 C 10,90 40,10 100,10 Z" 
-                          fill="url(#eggGrad)" 
+                    <path id="eggPath" d="M 100,10 C 160,10 190,90 190,165 C 190,220 150,250 100,250 C 50,250 10,220 10,165 C 10,90 40,10 100,10 Z" 
+                          fill="url(#eggGradRegular)" 
                           stroke="#FFFFFF" 
                           stroke-width="5" />
                     
@@ -232,31 +253,38 @@
                     <path d="M 100,10 C 160,10 190,90 190,165 C 190,220 150,250 100,250 C 50,250 10,220 10,165 C 10,90 40,10 100,10 Z" 
                           fill="url(#pastelPattern)" />
 
-                    <!-- Crack Path 1 (Appears on Click 1 & 2) -->
-                    <path id="crack1" d="M 100,40 L 95,65 L 110,85 L 90,110" 
-                          stroke="#7B5E57" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
-
-                    <!-- Crack Path 2 (Appears on Click 3) -->
-                    <path id="crack2" d="M 90,110 L 120,130 L 85,160" 
-                          stroke="#7B5E57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
-
-                    <!-- Crack Path 3 (Appears on Click 4) -->
-                    <path id="crack3" d="M 85,160 L 130,195 L 100,225" 
-                          stroke="#7B5E57" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+                    <!-- Cracks -->
+                    <path id="crack1" d="M 100,40 L 95,65 L 110,85 L 90,110" stroke="#7B5E57" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+                    <path id="crack2" d="M 90,110 L 120,130 L 85,160" stroke="#7B5E57" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
+                    <path id="crack3" d="M 85,160 L 130,195 L 100,225" stroke="#7B5E57" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="hidden" />
                 </svg>
 
-                <!-- Floor Shadow -->
-                <div class="w-48 h-6 bg-slate-400/20 rounded-full mx-auto -mt-3 filter blur-sm"></div>
+                <div class="w-44 h-5 bg-slate-400/20 rounded-full mx-auto -mt-3 filter blur-sm"></div>
             </div>
 
-            <!-- Helper Hint -->
             <p class="text-xs text-slate-400 mt-2 font-medium">Tap egg repeatedly to hatch!</p>
+        </div>
+
+        <!-- Buy Lucky Egg Premium Option -->
+        <div class="mt-2 mb-4 bg-gradient-to-r from-yellow-100 via-pink-100 to-purple-100 border-2 border-yellow-300 p-3 sm:p-4 rounded-2xl soft-shadow max-w-md w-full flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-left">
+                <div class="text-xs font-bold text-yellow-700 uppercase tracking-wider flex items-center gap-1">
+                    <span>✨</span> Premium Upgrade
+                </div>
+                <div class="text-sm font-header font-bold text-slate-800">
+                    Buy this egg to get a lucky chance!
+                </div>
+                <p class="text-[11px] text-slate-500 font-semibold">Boosts Rare, Epic, Legendary & Godly drops!</p>
+            </div>
+            <button onclick="openBcaModal()" class="btn-pastel bg-gradient-to-r from-amber-400 to-pink-500 text-white font-header font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md whitespace-nowrap flex items-center gap-1">
+                <span>🍀</span> Unlock Lucky Egg
+            </button>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="w-full text-center py-4 text-xs font-semibold text-slate-400 z-10 relative">
+    <footer class="w-full text-center py-3 text-xs font-semibold text-slate-400 z-10 relative">
         CRACK AN EGG &copy; Pastel Pet Collector Game
     </footer>
 
@@ -264,96 +292,112 @@
 
     <!-- 1. PET LIST MODAL -->
     <div id="petListModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
-        <div class="bg-white/95 w-full max-w-2xl rounded-3xl p-6 sm:p-8 soft-shadow border-4 border-pink-100 max-h-[85vh] flex flex-col transform transition-transform scale-95 opacity-0" id="petListContent">
+        <div class="bg-white/95 w-full max-w-3xl rounded-3xl p-5 sm:p-7 soft-shadow border-4 border-pink-100 max-h-[85vh] flex flex-col transform transition-transform scale-95 opacity-0" id="petListContent">
             
-            <!-- Modal Header -->
-            <div class="flex justify-between items-center pb-4 border-b border-pink-100 mb-4">
+            <div class="flex justify-between items-center pb-3 border-b border-pink-100 mb-3">
                 <div class="flex items-center gap-2">
                     <span class="text-2xl">📜</span>
-                    <h2 class="text-2xl font-header font-bold text-slate-700">Pet Collection Book</h2>
+                    <h2 class="text-xl sm:text-2xl font-header font-bold text-slate-700">All Pets & Rarity Book</h2>
                 </div>
-                <button onclick="closePetListModal()" class="w-9 h-9 rounded-full bg-pink-100 text-pink-600 font-bold hover:bg-pink-200 flex items-center justify-center transition-colors">
-                    ✕
-                </button>
+                <button onclick="closePetListModal()" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 font-bold hover:bg-pink-200 flex items-center justify-center">✕</button>
             </div>
 
-            <!-- Pet Tiers Scrollable Container -->
-            <div class="overflow-y-auto space-y-6 pr-2 flex-grow text-left">
-                
-                <!-- Common Tier -->
+            <div class="overflow-y-auto space-y-5 pr-2 flex-grow text-left">
+                <!-- Godly -->
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-cyan-100 text-cyan-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Common (45%)</span>
-                    </div>
-                    <div id="commonList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                    <span class="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">⚡ GODLY TIER</span>
+                    <div id="godlyList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
                 </div>
-
-                <!-- Uncommon Tier -->
+                <!-- Ancient -->
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-emerald-100 text-emerald-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Uncommon (30%)</span>
-                    </div>
-                    <div id="uncommonList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                    <span class="bg-amber-100 text-amber-800 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">🦖 ANCIENT MYTHICAL</span>
+                    <div id="ancientList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
                 </div>
-
-                <!-- Rare Tier -->
+                <!-- Legendary -->
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-amber-100 text-amber-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Rare (15%)</span>
-                    </div>
-                    <div id="rareList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                    <span class="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">🌟 LEGENDARY</span>
+                    <div id="legendaryList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
                 </div>
-
-                <!-- Legendary Tier -->
+                <!-- Epic -->
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-rose-100 text-rose-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Legendary Mythical (8%)</span>
-                    </div>
-                    <div id="legendaryList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                    <span class="bg-purple-100 text-purple-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">🟣 EPIC</span>
+                    <div id="epicList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
                 </div>
-
-                <!-- Ancient Mythical Tier -->
+                <!-- Rare -->
                 <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-lime-100 text-lime-800 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">Ancient Mythical (2%)</span>
-                    </div>
-                    <div id="ancientList" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
+                    <span class="bg-blue-100 text-blue-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">🔵 RARE</span>
+                    <div id="rareList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
+                </div>
+                <!-- Uncommon -->
+                <div>
+                    <span class="bg-emerald-100 text-emerald-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">🟢 UNCOMMON</span>
+                    <div id="uncommonList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
+                </div>
+                <!-- Common -->
+                <div>
+                    <span class="bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">⚪ COMMON</span>
+                    <div id="commonList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2"></div>
                 </div>
             </div>
 
-            <!-- Modal Footer -->
-            <div class="pt-4 border-t border-pink-100 mt-4 text-center">
-                <button onclick="closePetListModal()" class="btn-pastel bg-pink-400 text-white font-header font-bold px-8 py-2.5 rounded-full shadow-md hover:bg-pink-500">
-                    Got It!
-                </button>
+            <div class="pt-3 border-t border-pink-100 mt-3 text-center">
+                <button onclick="closePetListModal()" class="btn-pastel bg-pink-400 text-white font-header font-bold px-6 py-2 rounded-full shadow-md">Got It!</button>
             </div>
         </div>
     </div>
 
-
-    <!-- 2. REWARD HATCH MODAL -->
-    <div id="rewardModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white/95 w-full max-w-md rounded-3xl p-6 sm:p-8 text-center soft-shadow border-4 border-white transform transition-transform scale-90 opacity-0 relative" id="rewardContent">
+    <!-- 2. MY COLLECTION MODAL -->
+    <div id="myCollectionModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300">
+        <div class="bg-white/95 w-full max-w-2xl rounded-3xl p-5 sm:p-7 soft-shadow border-4 border-yellow-200 max-h-[85vh] flex flex-col transform transition-transform scale-95 opacity-0" id="myCollectionContent">
             
-            <!-- Confetti Glow -->
-            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-yellow-300 text-3xl w-20 h-20 rounded-full flex items-center justify-center border-4 border-white shadow-lg animate-bounce">
+            <div class="flex justify-between items-center pb-3 border-b border-yellow-100 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎒</span>
+                    <h2 class="text-xl sm:text-2xl font-header font-bold text-slate-700">
+                        <span id="collectionOwnerName">Player</span>'s Collection
+                    </h2>
+                </div>
+                <button onclick="closeMyCollectionModal()" class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 font-bold hover:bg-yellow-200 flex items-center justify-center">✕</button>
+            </div>
+
+            <div class="overflow-y-auto pr-2 flex-grow text-left">
+                <div id="collectionGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+                <div id="emptyCollectionState" class="hidden text-center py-10 text-slate-400">
+                    <span class="text-4xl block mb-2">🕸️</span>
+                    <p class="font-header text-base">Your pet bag is empty!</p>
+                    <p class="text-xs">Start cracking eggs to collect pets.</p>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-yellow-100 mt-3 text-center">
+                <button onclick="closeMyCollectionModal()" class="btn-pastel bg-amber-400 text-white font-header font-bold px-6 py-2 rounded-full shadow-md">Close Bag</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. REWARD HATCH MODAL -->
+    <div id="rewardModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white/95 w-full max-w-md rounded-3xl p-6 text-center soft-shadow border-4 border-white transform transition-transform scale-90 opacity-0 relative" id="rewardContent">
+            
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-yellow-300 text-3xl w-16 h-16 rounded-full flex items-center justify-center border-4 border-white shadow-lg animate-bounce">
                 🎉
             </div>
 
-            <div class="mt-6">
+            <div class="mt-4">
                 <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest">Hatch Success!</h3>
-                <h2 class="text-2xl sm:text-3xl font-header font-extrabold text-slate-700 mt-1">
-                    Congratulations!
+                <h2 class="text-xl sm:text-2xl font-header font-extrabold text-slate-700 mt-1">
+                    Congratulations <span id="rewardOwnerName" class="text-pink-500">Player</span>!
                 </h2>
-                <p class="text-slate-500 font-semibold text-sm mt-1">You've got a new pet!</p>
+                <p class="text-slate-500 font-semibold text-xs mt-1">You've got a new pet!</p>
             </div>
 
-            <!-- Pet Display Box -->
-            <div class="my-6 p-6 rounded-2xl bg-gradient-to-b from-pink-50 to-purple-50 border-2 border-pink-100 flex flex-col items-center justify-center">
-                <div id="rewardPetEmoji" class="text-7xl sm:text-8xl my-2 transform transition-all duration-300 hover:scale-110">
+            <div class="my-5 p-5 rounded-2xl bg-gradient-to-b from-pink-50 to-purple-50 border-2 border-pink-100 flex flex-col items-center justify-center">
+                <div id="rewardPetEmoji" class="text-7xl sm:text-8xl my-1 transform transition-all duration-300 hover:scale-110">
                     🐱
                 </div>
-                <div id="rewardPetName" class="text-2xl font-header font-bold text-slate-800 mt-2">
+                <div id="rewardPetName" class="text-2xl font-header font-bold text-slate-800 mt-1">
                     Cute Cat
                 </div>
                 <div id="rewardPetBadge" class="mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold tracking-wider uppercase border">
@@ -361,62 +405,153 @@
                 </div>
             </div>
 
-            <!-- Play Again Action -->
-            <button onclick="resetEgg()" class="btn-pastel w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-header font-bold text-lg py-3.5 rounded-2xl shadow-lg hover:from-pink-500 hover:to-purple-500 flex items-center justify-center gap-2">
+            <button onclick="resetEgg()" class="btn-pastel w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-header font-bold text-base py-3 rounded-2xl shadow-lg hover:from-pink-500 hover:to-purple-500 flex items-center justify-center gap-2">
                 <span>🔄</span> Crack Another Egg!
             </button>
         </div>
     </div>
 
+    <!-- 4. SIMULATED BCA PAYMENT UNLOCK MODAL -->
+    <div id="bcaModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center soft-shadow border-4 border-blue-200">
+            <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl font-bold font-header mx-auto mb-3 shadow-md">
+                BCA
+            </div>
+            <h3 class="text-lg font-header font-bold text-slate-800">Unlock Lucky Egg</h3>
+            <p class="text-xs text-slate-500 mt-1">Pay with BCA Virtual Account to get +300% Lucky Chance Boost!</p>
+            
+            <div class="my-4 bg-blue-50 p-3 rounded-xl text-left border border-blue-100">
+                <div class="text-[11px] text-slate-400 uppercase font-bold">Item:</div>
+                <div class="text-sm font-bold text-slate-700">1x Lucky Egg Spin Pass</div>
+                <div class="text-[11px] text-blue-600 font-bold mt-1">Status: Ready to Crack</div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeBcaModal()" class="btn-pastel w-1/2 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Cancel</button>
+                <button onclick="confirmBcaPayment()" class="btn-pastel w-1/2 bg-blue-600 text-white font-header font-bold py-2.5 rounded-xl text-xs shadow-md">Confirm Unlock</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. RESET CONFIRMATION MODAL -->
+    <div id="resetModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center soft-shadow border-4 border-red-100">
+            <div class="text-4xl mb-2">⚠️</div>
+            <h3 class="text-lg font-header font-bold text-slate-800">Are you sure?</h3>
+            <p class="text-xs text-slate-500 mt-1">Are you sure you want to reset all your collected pets and progress? This cannot be undone!</p>
+            
+            <div class="flex gap-2 mt-5">
+                <button onclick="closeResetModal()" class="btn-pastel w-1/2 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">No, Keep It</button>
+                <button onclick="executeResetData()" class="btn-pastel w-1/2 bg-red-500 text-white font-header font-bold py-2.5 rounded-xl text-xs shadow-md">Yes, Reset All</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
     <script>
         /* -------------------------------------------------------------
-           1. PET DATA DEFINITION (20+ Pets categorized by Rarity)
+           1. FULL IPHONE EMOJI DATABASE CATEGORIZATION
         ------------------------------------------------------------- */
         const PET_DATABASE = {
             common: [
-                { name: 'Cat', emoji: '🐱' },
-                { name: 'Dog', emoji: '🐶' },
-                { name: 'Mouse', emoji: '🐭' },
-                { name: 'Rabbit', emoji: '🐰' },
-                { name: 'Chick', emoji: '🐥' },
-                { name: 'Hamster', emoji: '🐹' }
+                { name: 'Cat', emoji: '🐱' }, { name: 'Dog', emoji: '🐶' }, { name: 'Mouse', emoji: '🐭' }, 
+                { name: 'Hamster', emoji: '🐹' }, { name: 'Rabbit', emoji: '🐰' }, { name: 'Fox', emoji: '🦊' }, 
+                { name: 'Bear', emoji: '🐻' }, { name: 'Panda', emoji: '🐼' }, { name: 'Koala', emoji: '🐨' }, 
+                { name: 'Tiger', emoji: '🐯' }, { name: 'Lion', emoji: '🦁' }, { name: 'Cow', emoji: '🐮' }, 
+                { name: 'Pig', emoji: '🐷' }, { name: 'Frog', emoji: '🐸' }, { name: 'Monkey', emoji: '🐵' }, 
+                { name: 'Baby Chick', emoji: '🐤' }, { name: 'Hatching Chick', emoji: '🐥' }, { name: 'Bird', emoji: '🐦' }, 
+                { name: 'Penguin', emoji: '🐧' }, { name: 'Caterpillar', emoji: '🐛' }, { name: 'Ant', emoji: '🐜' }, 
+                { name: 'Beetle', emoji: '🪲' }, { name: 'Ladybug', emoji: '🐞' }, { name: 'Cricket', emoji: '🦗' }, 
+                { name: 'Fly', emoji: '🪰' }, { name: 'Mosquito', emoji: '🦟' }, { name: 'Snail', emoji: '🐌' }
             ],
             uncommon: [
-                { name: 'Fox', emoji: '🦊' },
-                { name: 'Bear', emoji: '🐻' },
-                { name: 'Panda', emoji: '🐼' },
-                { name: 'Koala', emoji: '🐨' },
-                { name: 'Tiger', emoji: '🐯' },
-                { name: 'Lion', emoji: '🦁' },
-                { name: 'Frog', emoji: '🐸' }
+                { name: 'Zebra', emoji: '🦓' }, { name: 'Giraffe', emoji: '🦒' }, { name: 'Kangaroo', emoji: '🦘' }, 
+                { name: 'Sloth', emoji: '🦥' }, { name: 'Otter', emoji: '🦦' }, { name: 'Skunk', emoji: '🦨' }, 
+                { name: 'Badger', emoji: '🦡' }, { name: 'Hedgehog', emoji: '🦔' }, { name: 'Bat', emoji: '🦇' }, 
+                { name: 'Owl', emoji: '🦉' }, { name: 'Eagle', emoji: '🦅' }, { name: 'Duck', emoji: '🦆' }, 
+                { name: 'Swan', emoji: '🦢' }, { name: 'Flamingo', emoji: '🦩' }, { name: 'Peacock', emoji: '🦚' }, 
+                { name: 'Parrot', emoji: '🦜' }, { name: 'Turtle', emoji: '🐢' }, { name: 'Snake', emoji: '🐍' }, 
+                { name: 'Lizard', emoji: '🦎' }, { name: 'Octopus', emoji: '🐙' }, { name: 'Squid', emoji: '🦑' }, 
+                { name: 'Shrimp', emoji: '🦐' }, { name: 'Lobster', emoji: '🦞' }, { name: 'Crab', emoji: '🦀' }, 
+                { name: 'Honeybee', emoji: '🐝' }, { name: 'Butterfly', emoji: '🦋' }, { name: 'Spider', emoji: '🕷️' }, 
+                { name: 'Scorpion', emoji: '🦂' }
             ],
             rare: [
-                { name: 'Elephant', emoji: '🐘' },
-                { name: 'Giraffe', emoji: '🦒' },
-                { name: 'Octopus', emoji: '🐙' },
-                { name: 'Dolphin', emoji: '🐬' }
+                { name: 'Horse', emoji: '🐴' }, { name: 'Unicorn Face', emoji: '🦄' }, { name: 'Boar', emoji: '🐗' }, 
+                { name: 'Wolf', emoji: '🐺' }, { name: 'Rhino', emoji: '🦏' }, { name: 'Hippo', emoji: '🦛' }, 
+                { name: 'Elephant', emoji: '🐘' }, { name: 'Camel', emoji: '🐪' }, { name: 'Two-Hump Camel', emoji: '🐫' }, 
+                { name: 'Llama', emoji: '🦙' }, { name: 'Seal', emoji: '🦭' }, { name: 'Dolphin', emoji: '🐬' }, 
+                { name: 'Spouting Whale', emoji: '🐳' }, { name: 'Whale', emoji: '🐋' }, { name: 'Shark', emoji: '🦈' }, 
+                { name: 'Crocodile', emoji: '🐊' }, { name: 'Leopard', emoji: '🐆' }
+            ],
+            epic: [
+                { name: 'Gorilla', emoji: '🦍' }, { name: 'Orangutan', emoji: '🦧' }, { name: 'Mammoth', emoji: '🦣' }, 
+                { name: 'Dodo', emoji: '🦤' }, { name: 'Royal Peacock', emoji: '🦚' }, { name: 'Imperial Dragon', emoji: '🐲' }, 
+                { name: 'Wyvern', emoji: '🐉' }, { name: 'Sauropod', emoji: '🦕' }, { name: 'Rexie', emoji: '🦖' }
             ],
             legendary: [
-                { name: 'Unicorn', emoji: '🦄' },
-                { name: 'Dragon', emoji: '🐲' },
+                { name: 'Mythic Unicorn', emoji: '🦄' },
+                { name: 'Grand Dragon', emoji: '🐲' },
                 { name: 'Phoenix', emoji: '🐦‍🔥' }
             ],
             ancient: [
-                { name: 'T-Rex', emoji: '🦖' }
+                { name: 'Ancient T-Rex', emoji: '🦖' }
+            ],
+            godly: [
+                { name: 'Zeus', emoji: '⚡' },
+                { name: 'Poseidon', emoji: '🌊' },
+                { name: 'Agni', emoji: '🔥' },
+                { name: 'Anemoi', emoji: '🌪️' }
             ]
         };
 
         /* -------------------------------------------------------------
-           2. GAME STATE
+           2. GAME STATE & LOCALSTORAGE PERSISTENCE
         ------------------------------------------------------------- */
         let clickCount = 0;
         const MAX_CLICKS = 5;
         let isHatched = false;
+        let isLuckyEgg = false;
+        let myCollection = {}; // Format: { "Cat": { pet: object, count: N } }
+        let userName = "Player";
+
+        function loadSavedData() {
+            const savedName = localStorage.getItem('crack_egg_username');
+            if (savedName) {
+                userName = savedName;
+                document.getElementById('userNameInput').value = userName;
+            }
+
+            const savedCol = localStorage.getItem('crack_egg_collection');
+            if (savedCol) {
+                try {
+                    myCollection = JSON.parse(savedCol);
+                } catch(e) { myCollection = {}; }
+            }
+            updateCollectionHeaderCount();
+        }
+
+        function saveUserName() {
+            const val = document.getElementById('userNameInput').value.trim();
+            userName = val || "Player";
+            localStorage.setItem('crack_egg_username', userName);
+        }
+
+        function saveCollection() {
+            localStorage.setItem('crack_egg_collection', JSON.stringify(myCollection));
+            updateCollectionHeaderCount();
+        }
+
+        function updateCollectionHeaderCount() {
+            let total = 0;
+            for (let key in myCollection) {
+                total += myCollection[key].count;
+            }
+            document.getElementById('collectionCountHeader').innerText = total;
+        }
 
         /* -------------------------------------------------------------
-           3. WEB AUDIO API SYNTHESIZER (No External Sound Dependencies)
+           3. AUDIO SYSTEM (Web Audio API)
         ------------------------------------------------------------- */
         let audioCtx = null;
         let isBgmPlaying = false;
@@ -431,7 +566,6 @@
             }
         }
 
-        // Crack / Pop Sound Generator
         function playCrackSound(intensity) {
             initAudioContext();
             if (!audioCtx) return;
@@ -439,7 +573,6 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            // Pitch increases as clicks get closer to hatching
             const pitchMap = [220, 280, 350, 440, 580];
             const baseFreq = pitchMap[Math.min(intensity - 1, 4)] || 300;
 
@@ -457,32 +590,30 @@
             osc.stop(audioCtx.currentTime + 0.09);
         }
 
-        // Victory Fanfare Sound Generator
         function playVictorySound() {
             initAudioContext();
             if (!audioCtx) return;
 
-            const notes = [440, 554.37, 659.25, 880]; // A Major Chord Arpeggio
+            const notes = [440, 554.37, 659.25, 880, 1046.50];
             notes.forEach((freq, idx) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
 
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.1);
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
 
-                gain.gain.setValueAtTime(0, audioCtx.currentTime + idx * 0.1);
-                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + idx * 0.1 + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.35);
+                gain.gain.setValueAtTime(0, audioCtx.currentTime + idx * 0.08);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + idx * 0.08 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.35);
 
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
 
-                osc.start(audioCtx.currentTime + idx * 0.1);
-                osc.stop(audioCtx.currentTime + idx * 0.1 + 0.4);
+                osc.start(audioCtx.currentTime + idx * 0.08);
+                osc.stop(audioCtx.currentTime + idx * 0.08 + 0.4);
             });
         }
 
-        // Relaxed Pastel Background Music Synth Loop
         function toggleBGM() {
             initAudioContext();
             isBgmPlaying = !isBgmPlaying;
@@ -506,13 +637,7 @@
 
         function startBgmLoop() {
             if (bgmInterval) clearInterval(bgmInterval);
-
-            // Simple cute pastel melody notes (frequencies)
-            const melody = [
-                523.25, 659.25, 783.99, 659.25, 
-                587.33, 698.46, 880.00, 698.46, 
-                523.25, 659.25, 783.99, 1046.50
-            ];
+            const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46];
             let noteIdx = 0;
 
             bgmInterval = setInterval(() => {
@@ -524,7 +649,7 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(melody[noteIdx], audioCtx.currentTime);
 
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
 
                 osc.connect(gain);
@@ -545,7 +670,7 @@
         }
 
         /* -------------------------------------------------------------
-           4. EGG CLICK & CRACK MECHANIC
+           4. EGG CLICK & CRACK MECHANICS
         ------------------------------------------------------------- */
         function handleEggClick(e) {
             if (isHatched) return;
@@ -553,39 +678,31 @@
             clickCount++;
             document.getElementById('clickCounterText').innerText = `${clickCount} / ${MAX_CLICKS}`;
 
-            // Play Crack Sound
             playCrackSound(clickCount);
-
-            // Trigger Visual Particle Sparkles
             spawnSparkles(e);
 
-            // Trigger Shake Animation based on click count
             const eggSvg = document.getElementById('eggSvg');
-            eggSvg.className = `w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all egg-shake-${Math.min(clickCount, 4)}`;
+            eggSvg.className = `w-52 h-64 sm:w-60 sm:h-72 relative z-10 drop-shadow-2xl transition-all egg-shake-${Math.min(clickCount, 4)}`;
 
-            // Reveal Crack Lines SVG
             if (clickCount >= 2) document.getElementById('crack1').classList.remove('hidden');
             if (clickCount >= 3) document.getElementById('crack2').classList.remove('hidden');
             if (clickCount >= 4) document.getElementById('crack3').classList.remove('hidden');
 
-            // Reset shake class after animation completes
             setTimeout(() => {
-                eggSvg.className = 'w-56 h-72 sm:w-64 sm:h-80 relative z-10 drop-shadow-2xl transition-all';
+                eggSvg.className = 'w-52 h-64 sm:w-60 sm:h-72 relative z-10 drop-shadow-2xl transition-all';
             }, 450);
 
-            // Check Hatch Condition
             if (clickCount >= MAX_CLICKS) {
                 isHatched = true;
                 setTimeout(hatchEgg, 300);
             }
         }
 
-        // Particle FX on Click
         function spawnSparkles(e) {
             const rect = e.currentTarget.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const clickY = e.clientY - rect.top;
-            const particles = ['✨', '⭐', '🌸', '💫'];
+            const particles = isLuckyEgg ? ['✨', '⭐', '💎', '🍀'] : ['✨', '⭐', '🌸', '💫'];
 
             for (let i = 0; i < 6; i++) {
                 const sparkle = document.createElement('div');
@@ -601,50 +718,58 @@
                 sparkle.style.setProperty('--dy', dy);
 
                 e.currentTarget.appendChild(sparkle);
-
                 setTimeout(() => sparkle.remove(), 800);
             }
         }
 
         /* -------------------------------------------------------------
-           5. PET HATCHING & WEIGHTED RANDOM SYSTEM
+           5. WEIGHTED RANDOM & HATCHING SYSTEM
         ------------------------------------------------------------- */
         function hatchEgg() {
-            // Confetti Burst Effect
             if (typeof confetti === 'function') {
                 confetti({
-                    particleCount: 100,
-                    spread: 70,
+                    particleCount: isLuckyEgg ? 160 : 100,
+                    spread: 80,
                     origin: { y: 0.6 },
-                    colors: ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA']
+                    colors: isLuckyEgg ? ['#FFD700', '#FF69B4', '#00FFFF', '#FF4500'] : ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA']
                 });
             }
 
-            // Play Victory Sound
             playVictorySound();
-
-            // Roll for Random Pet Weighted by Rarity
             const selectedPet = getWeightedRandomPet();
 
-            // Display Reward Modal
+            // Add to My Collection
+            if (!myCollection[selectedPet.name]) {
+                myCollection[selectedPet.name] = { pet: selectedPet, count: 1 };
+            } else {
+                myCollection[selectedPet.name].count += 1;
+            }
+            saveCollection();
+
             showRewardModal(selectedPet);
         }
 
         function getWeightedRandomPet() {
-            // Probabilities: Common: 45%, Uncommon: 30%, Rare: 15%, Legendary: 8%, Ancient: 2%
             const rand = Math.random() * 100;
             let tier = 'common';
 
-            if (rand < 2) {
-                tier = 'ancient';
-            } else if (rand < 10) {
-                tier = 'legendary';
-            } else if (rand < 25) {
-                tier = 'rare';
-            } else if (rand < 55) {
-                tier = 'uncommon';
+            if (!isLuckyEgg) {
+                // Regular Rates: Common 40%, Uncommon 30%, Rare 16%, Epic 9%, Legendary 3%, Ancient 1.5%, Godly 0.5%
+                if (rand < 0.5) tier = 'godly';
+                else if (rand < 2.0) tier = 'ancient';
+                else if (rand < 5.0) tier = 'legendary';
+                else if (rand < 14.0) tier = 'epic';
+                else if (rand < 30.0) tier = 'rare';
+                else if (rand < 60.0) tier = 'uncommon';
+                else tier = 'common';
             } else {
-                tier = 'common';
+                // Lucky Egg Boosted Rates: Godly 5%, Ancient 10%, Legendary 20%, Epic 30%, Rare 25%, Uncommon 10%
+                if (rand < 5.0) tier = 'godly';
+                else if (rand < 15.0) tier = 'ancient';
+                else if (rand < 35.0) tier = 'legendary';
+                else if (rand < 65.0) tier = 'epic';
+                else if (rand < 90.0) tier = 'rare';
+                else tier = 'uncommon';
             }
 
             const petList = PET_DATABASE[tier];
@@ -653,33 +778,56 @@
         }
 
         /* -------------------------------------------------------------
-           6. MODAL SYSTEM LOGIC
+           6. BCA LUCKY EGG PURCHASING SIMULATION
+        ------------------------------------------------------------- */
+        function openBcaModal() {
+            document.getElementById('bcaModal').classList.remove('hidden');
+        }
+
+        function closeBcaModal() {
+            document.getElementById('bcaModal').classList.add('hidden');
+        }
+
+        function confirmBcaPayment() {
+            closeBcaModal();
+            isLuckyEgg = true;
+
+            // Visual switch to Lucky Egg
+            document.getElementById('activeEggBadge').className = 'bg-gradient-to-r from-yellow-400 via-amber-400 to-pink-500 text-white font-header text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow godly-glow';
+            document.getElementById('activeEggBadge').innerHTML = '🍀 Lucky Egg Active (+Luck Boost!)';
+            
+            document.getElementById('eggPath').setAttribute('fill', 'url(#eggGradLucky)');
+            document.getElementById('eggGlow').className = 'absolute inset-0 bg-yellow-400/60 rounded-full filter blur-xl group-hover:blur-2xl transition-all';
+
+            resetEggStateOnly();
+        }
+
+        /* -------------------------------------------------------------
+           7. MODAL HELPERS & RENDERERS
         ------------------------------------------------------------- */
         function showRewardModal(pet) {
             const modal = document.getElementById('rewardModal');
             const content = document.getElementById('rewardContent');
-            const emojiEl = document.getElementById('rewardPetEmoji');
-            const nameEl = document.getElementById('rewardPetName');
+            
+            document.getElementById('rewardOwnerName').innerText = userName || "Player";
+            document.getElementById('rewardPetEmoji').innerText = pet.emoji;
+            document.getElementById('rewardPetName').innerText = pet.name;
+
             const badgeEl = document.getElementById('rewardPetBadge');
 
-            emojiEl.innerText = pet.emoji;
-            nameEl.innerText = pet.name;
-
-            // Rarity Badge Styling
             const badgeStyles = {
-                common: 'bg-cyan-100 text-cyan-700 border-cyan-300',
+                common: 'bg-slate-100 text-slate-700 border-slate-300',
                 uncommon: 'bg-emerald-100 text-emerald-700 border-emerald-300',
-                rare: 'bg-amber-100 text-amber-700 border-amber-300',
+                rare: 'bg-blue-100 text-blue-700 border-blue-300',
+                epic: 'bg-purple-100 text-purple-700 border-purple-300',
                 legendary: 'bg-rose-100 text-rose-700 border-rose-300',
-                ancient: 'bg-lime-100 text-lime-800 border-lime-400 font-extrabold animate-pulse'
+                ancient: 'bg-amber-100 text-amber-800 border-amber-400 font-bold',
+                godly: 'bg-gradient-to-r from-pink-500 to-yellow-400 text-white border-yellow-200 font-extrabold godly-glow'
             };
 
             const tierNames = {
-                common: 'COMMON',
-                uncommon: 'UNCOMMON',
-                rare: 'RARE',
-                legendary: 'LEGENDARY MYTHICAL',
-                ancient: 'ANCIENT MYTHICAL'
+                common: 'COMMON', uncommon: 'UNCOMMON', rare: 'RARE', 
+                epic: 'EPIC', legendary: 'LEGENDARY', ancient: 'ANCIENT MYTHICAL', godly: '⚡ GODLY ⚡'
             };
 
             badgeEl.className = `mt-2 inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase border ${badgeStyles[pet.tier]}`;
@@ -692,7 +840,7 @@
             }, 20);
         }
 
-        function resetEgg() {
+        function resetEggStateOnly() {
             clickCount = 0;
             isHatched = false;
 
@@ -700,6 +848,19 @@
             document.getElementById('crack1').classList.add('hidden');
             document.getElementById('crack2').classList.add('hidden');
             document.getElementById('crack3').classList.add('hidden');
+        }
+
+        function resetEgg() {
+            resetEggStateOnly();
+
+            // Revert back to Regular Egg after 1 Lucky Spin
+            if (isLuckyEgg) {
+                isLuckyEgg = false;
+                document.getElementById('activeEggBadge').className = 'bg-gradient-to-r from-pink-400 to-purple-400 text-white font-header text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow';
+                document.getElementById('activeEggBadge').innerHTML = '🥚 Regular Egg Active';
+                document.getElementById('eggPath').setAttribute('fill', 'url(#eggGradRegular)');
+                document.getElementById('eggGlow').className = 'absolute inset-0 bg-yellow-200/50 rounded-full filter blur-xl group-hover:blur-2xl transition-all';
+            }
 
             const modal = document.getElementById('rewardModal');
             const content = document.getElementById('rewardContent');
@@ -707,23 +868,20 @@
             content.classList.remove('scale-100', 'opacity-100');
             content.classList.add('scale-90', 'opacity-0');
 
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
 
-        // Pet List Modal Logic
+        // Render Pet List
         function renderPetList() {
-            const tiers = ['common', 'uncommon', 'rare', 'legendary', 'ancient'];
-            
+            const tiers = ['godly', 'ancient', 'legendary', 'epic', 'rare', 'uncommon', 'common'];
             tiers.forEach(tier => {
                 const container = document.getElementById(`${tier}List`);
                 if (!container) return;
                 
                 container.innerHTML = PET_DATABASE[tier].map(pet => `
-                    <div class="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-xl hover:bg-pink-50/50 transition-colors">
-                        <span class="text-2xl">${pet.emoji}</span>
-                        <span class="text-xs sm:text-sm font-bold text-slate-700">${pet.name}</span>
+                    <div class="flex items-center gap-2 p-2 bg-slate-50 border border-slate-200 rounded-xl">
+                        <span class="text-xl sm:text-2xl">${pet.emoji}</span>
+                        <span class="text-xs font-bold text-slate-700 truncate">${pet.name}</span>
                     </div>
                 `).join('');
             });
@@ -733,7 +891,6 @@
             renderPetList();
             const modal = document.getElementById('petListModal');
             const content = document.getElementById('petListContent');
-
             modal.classList.remove('hidden');
             setTimeout(() => {
                 content.classList.remove('scale-95', 'opacity-0');
@@ -744,17 +901,84 @@
         function closePetListModal() {
             const modal = document.getElementById('petListModal');
             const content = document.getElementById('petListContent');
-
             content.classList.remove('scale-100', 'opacity-100');
             content.classList.add('scale-95', 'opacity-0');
-
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
         }
 
-        // Initialize Pet List on Load
+        // Render Collection Modal
+        function openMyCollectionModal() {
+            document.getElementById('collectionOwnerName').innerText = userName || "Player";
+            const grid = document.getElementById('collectionGrid');
+            const emptyState = document.getElementById('emptyCollectionState');
+
+            const keys = Object.keys(myCollection);
+            if (keys.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                grid.innerHTML = keys.map(key => {
+                    const item = myCollection[key];
+                    return `
+                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-yellow-50 border border-yellow-200 rounded-2xl">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-3xl">${item.pet.emoji}</span>
+                                <div>
+                                    <div class="text-xs font-header font-bold text-slate-800">${item.pet.name}</div>
+                                    <div class="text-[10px] font-semibold uppercase text-pink-500">${item.pet.tier}</div>
+                                </div>
+                            </div>
+                            <span class="bg-amber-400 text-white font-header font-bold text-xs px-2.5 py-1 rounded-full shadow-sm">
+                                x${item.count}
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const modal = document.getElementById('myCollectionModal');
+            const content = document.getElementById('myCollectionContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 20);
+        }
+
+        function closeMyCollectionModal() {
+            const modal = document.getElementById('myCollectionModal');
+            const content = document.getElementById('myCollectionContent');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 200);
+        }
+
+        /* -------------------------------------------------------------
+           8. RESET DATA CONFIRMATION
+        ------------------------------------------------------------- */
+        function promptResetData() {
+            document.getElementById('resetModal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').classList.add('hidden');
+        }
+
+        function executeResetData() {
+            localStorage.removeItem('crack_egg_collection');
+            localStorage.removeItem('crack_egg_username');
+            myCollection = {};
+            userName = "Player";
+            document.getElementById('userNameInput').value = '';
+            updateCollectionHeaderCount();
+            closeResetModal();
+            resetEggStateOnly();
+        }
+
+        // Initialize App
         window.onload = function() {
+            loadSavedData();
             renderPetList();
         };
     </script>
